@@ -7,6 +7,7 @@
 
 | 日本語 | 識別子 | 意味 |
 |---|---|---|
+| 家系 | `genealogy` | `persons` / `families` / `familyChildren` をまとめた家系図データ一式 |
 | 人物 | `person` / `persons` | 家系図に載る個人 |
 | 家族ユニット | `family` / `families` | 婚姻、または片親のみの親グループ。子はここに属する |
 | 配偶者 | `partner` | family を構成する人物。`partner1` が左、`partner2` が右 |

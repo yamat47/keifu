@@ -52,20 +52,22 @@ keifu/
 
 ## Phase 0: 骨組み
 
-- [ ] Vite + React + TypeScript のセットアップ
-- [ ] `@cloudflare/vite-plugin` + `wrangler.jsonc`（設定キーは公式ドキュメントで確認する）
-- [ ] Vitest のセットアップ
-- [ ] **ESLint の層境界ルール** — `.claude/rules/layer-boundaries.md` の内容を機械的に強制する。
+- [x] Vite + React + TypeScript のセットアップ
+- [x] `@cloudflare/vite-plugin` + `wrangler.jsonc`（設定キーは公式ドキュメントで確認する）
+- [x] Vitest のセットアップ
+- [x] **ESLint の層境界ルール** — `.claude/rules/layer-boundaries.md` の内容を機械的に強制する。
       後から入れると大量の違反が出て形骸化するので、コードを書く前に入れる
-- [ ] `src/domain/models/` の型定義と Zod スキーマ
-- [ ] `src/fixtures/` のサンプル家系15人 — 養子・再婚・片親・複数ルート・世代の矛盾を含める。
+- [x] `src/domain/models/` の型定義と Zod スキーマ
+- [x] `src/fixtures/` のサンプル家系15人 — 養子・再婚・片親・複数ルート・世代の矛盾を含める。
       レイアウトエンジンのテストと Storybook で共用する
 
 ## Phase 1: レイアウトエンジン（UI なし）
 
 仕様は [design/layout-engine.md](design/layout-engine.md)。全工程を TDD で進める。
 
-- [ ] 入力バリデーション（自己親子・祖先ループの検出）
+- [ ] 入力バリデーション（自己親子・祖先ループ・参照整合性の検出）。
+      Phase 3 の書き込み API からも呼ぶので、レイアウト計算とは独立した純粋関数にする。
+      弾かれるべき不正な家系を `src/fixtures/` に追加する
 - [ ] 世代割当（差分制約系 / 負閉路検出 / `generation_override`）
 - [ ] 主系統の抽出
 - [ ] 横位置計算（夫婦の隣接・兄弟の連続・複数ルート）
@@ -98,7 +100,8 @@ keifu/
 
 - [ ] D1 スキーマとマイグレーション
 - [ ] CRUD API（Hono + 生 SQL + Zod）
-- [ ] アプリ側バリデーション（祖先ループ検出、削除時の参照チェック）
+- [ ] 書き込み API から Phase 1 のグラフ検証（自己親子・祖先ループ・参照整合性）を呼ぶ。
+      検証を API 側に作り直さない → [data-model.md](design/data-model.md)
 - [ ] **JSON エクスポート / インポート** — 手入力した資産を守る保険。ここで必ず入れる
 - [ ] 閲覧ページを fixtures 直読みから API 経由に切り替え
 

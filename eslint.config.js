@@ -1,0 +1,171 @@
+import js from '@eslint/js'
+import { createTypeScriptImportResolver } from 'eslint-import-resolver-typescript'
+import importX from 'eslint-plugin-import-x'
+import reactHooks from 'eslint-plugin-react-hooks'
+import globals from 'globals'
+import tseslint from 'typescript-eslint'
+
+/**
+ * 層の境界は .claude/rules/layer-boundaries.md が正。
+ * ここはそれを機械的に強制するための写し。片方だけ直さない。
+ */
+// fixtures は domain/models しか import しない葉なので、どこから読まれても
+// 依存の向きは壊れない。全ゾーンの except に入れる → ADR-0004
+const FIXTURES = './fixtures'
+
+const LAYER_ZONES = [
+  {
+    target: './src/domain',
+    from: './src',
+    except: ['./domain', FIXTURES],
+    message: 'domain は fixtures 以外の層を import しない',
+  },
+  {
+    target: './src/design-system',
+    from: './src',
+    except: ['./design-system', FIXTURES],
+    message: 'design-system は domain も含め、fixtures 以外の層を import しない',
+  },
+  {
+    target: './src/features',
+    from: './src',
+    except: ['./domain', './design-system', './features', FIXTURES],
+    message: 'features が import してよいのは domain と design-system と fixtures',
+  },
+  {
+    target: './src/pages',
+    from: './src',
+    except: ['./features', './design-system/layouts', './pages', FIXTURES],
+    message: 'pages が import してよいのは features と design-system/layouts と fixtures',
+  },
+  {
+    target: './src/fixtures',
+    from: './src',
+    except: ['./domain/models', './fixtures'],
+    message: 'fixtures が import してよいのは domain/models だけ',
+  },
+]
+
+const NO_CSS_IMPORT = {
+  patterns: [
+    {
+      group: ['*.css', '*.scss'],
+      message: 'CSS は design-system 側で持つ',
+    },
+  ],
+}
+
+export default tseslint.config(
+  {
+    ignores: [
+      'dist/**',
+      '.wrangler/**',
+      'storybook-static/**',
+      'coverage/**',
+      'worker-configuration.d.ts', // wrangler types の生成物
+    ],
+  },
+
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
+
+  {
+    files: ['**/*.{ts,tsx}'],
+    plugins: { 'import-x': importX },
+    settings: {
+      'import-x/resolver-next': [
+        createTypeScriptImportResolver({ alwaysTryTypes: true }),
+      ],
+    },
+    rules: {
+      'import-x/no-restricted-paths': ['error', { zones: LAYER_ZONES }],
+      'import-x/order': [
+        'error',
+        { 'newlines-between': 'always', alphabetize: { order: 'asc' } },
+      ],
+    },
+  },
+
+  // domain: ロジックだけの世界
+  {
+    files: ['src/domain/**/*.ts'],
+    rules: {
+      'no-restricted-globals': [
+        'error',
+        { name: 'window', message: 'domain は DOM を触らない' },
+        { name: 'document', message: 'domain は DOM を触らない' },
+        { name: 'fetch', message: 'domain は I/O を持たない' },
+      ],
+      'no-restricted-imports': ['error', NO_CSS_IMPORT],
+    },
+  },
+
+  // domain に .tsx を置かせない。存在するだけで落とす
+  {
+    files: ['src/domain/**/*.tsx'],
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: 'Program',
+          message: 'domain に .tsx は置けない。JSX が必要ならその処理は features に属する',
+        },
+      ],
+    },
+  },
+
+  // design-system: 見た目だけの世界。副作用を持たない
+  {
+    files: ['src/design-system/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-globals': [
+        'error',
+        { name: 'fetch', message: 'design-system は props のみで完結する' },
+      ],
+    },
+  },
+
+  // features / pages: 見た目の調整は design-system 側の variant prop でやる
+  {
+    // features は「hooks + コンテナ」なので .ts も来る。CSS の import は
+    // 拡張子に関わらず禁じたい。JSX のセレクタは .ts では単に一致しない
+    files: ['src/features/**/*.{ts,tsx}', 'src/pages/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': ['error', NO_CSS_IMPORT],
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: 'JSXAttribute[name.name="className"]',
+          message: 'className を書かない。design-system 側に variant prop を足す',
+        },
+        {
+          selector: 'JSXAttribute[name.name="style"]',
+          message: 'style 属性を書かない。design-system 側に variant prop を足す',
+        },
+      ],
+    },
+  },
+
+  {
+    files: ['src/**/*.tsx'],
+    plugins: { 'react-hooks': reactHooks },
+    languageOptions: {
+      globals: globals.browser,
+    },
+    rules: reactHooks.configs.recommended.rules,
+  },
+
+  {
+    files: ['worker/**/*.ts'],
+    languageOptions: {
+      globals: globals.worker,
+    },
+  },
+
+  {
+    files: ['*.config.{ts,js}'],
+    languageOptions: {
+      globals: globals.node,
+    },
+  },
+)

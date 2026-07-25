@@ -117,15 +117,34 @@ CREATE INDEX ix_family_children_child ON family_children(child_id);
 
 ## アプリ側で担保するバリデーション
 
-SQL の CHECK では表現できないため、API 層（Zod + ドメインロジック）で検証する。
+SQL の CHECK では表現できないため、アプリ側で検証する。
+**検証する場所を、対象の広さで2つに分ける。**
 
-1. **自己親子の禁止** — `child_id` が同 family の `partner1_id` / `partner2_id` と一致しない
-2. **祖先ループの検出** — 血縁グラフをトポロジカルソートし、循環があれば登録を拒否する。
+### 1行で閉じるもの — Zod スキーマ（`src/domain/models/`）
+
+1件のレコードだけを見れば判定できる。API 境界と編集フォームの両方で同じスキーマを使う。
+
+1. **没年が生年より前でない** — どちらかが NULL なら検証しない
+2. **partner が1人もいない family を作らせない**（SQL の CHECK と対）
+3. **同一人物が同じ family の両方の partner にならない**（SQL の CHECK と対）
+
+### グラフ全体を見るもの — `src/domain/` の純粋関数
+
+複数のレコードを突き合わせないと判定できない。**API 層とレイアウトエンジンの
+両方から同じ関数を呼ぶ。** どちらか一方に実装を置くと、もう一方が
+検証を素通りするか、同じ判定を二重に持って食い違う。
+
+4. **自己親子の禁止** — `child_id` が同 family の `partner1_id` / `partner2_id` と一致しない
+5. **祖先ループの検出** — 血縁グラフをトポロジカルソートし、循環があれば登録を拒否する。
    手入力なので必ず誤登録が起きる前提で組む
-3. **人物削除** — partner として参照されている人物は削除できない（`ON DELETE RESTRICT`）。
+6. **参照整合性** — family の partner と family_children の参照先が実在すること
+
+### DB の制約に任せるもの
+
+7. **人物削除** — partner として参照されている人物は削除できない（`ON DELETE RESTRICT`）。
    先に family を削除させる。子としての参照は `ON DELETE CASCADE` で消える
-4. **重複登録** — 同一人物が同一 family に `biological` と `adopted` の両方で入らないこと
-   （`PRIMARY KEY (family_id, child_id)` により DB でも防がれる）
+8. **重複登録** — 同一人物が同一 family に `biological` と `adopted` の両方で入らないこと
+   （`PRIMARY KEY (family_id, child_id)`）
 
 ## 続柄の導出
 

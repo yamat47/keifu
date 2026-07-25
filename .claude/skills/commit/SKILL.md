@@ -51,8 +51,6 @@ git log --oneline -10
 <複数の選択肢を比べたなら、採用しなかった案とその理由>
 
 Refs: docs/adr/NNNN-....md
-
-Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
 ```
 
 - **日本語で書く。** ドメイン用語（続柄・養子縁組・家族ユニット）を英訳すると意味が落ちる
@@ -60,6 +58,8 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
 - 本文は必須。**ただし要約だけで Why が自明な変更は1行でよい**
   （タイポ修正、依存の追加、生成ファイルの更新 など）
 - 関連する ADR があれば `Refs:` でリンクする
+- **生成ツールの署名を入れない。** `Co-Authored-By` も `Generated with` も書かない。
+  読む人が知りたいのは何がなぜ変わったかであって、何で書かれたかではない
 
 ### 4. コミットする
 
@@ -77,8 +77,6 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
 異なる順序を取りうるため、persons 側に1つ持つと必ず破綻する。
 
 Refs: docs/adr/0001-family-unit-data-model.md
-
-Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
 ```
 
 ```
@@ -89,8 +87,6 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
 矛盾した婚姻制約を落として計算を続け、UI 側で警告を出す方が実用的。
 
 Refs: docs/adr/0002-generation-assignment.md
-
-Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
 ```
 
 **悪い例 — diff を読めば分かることしか書いていない**

@@ -1,13 +1,29 @@
 ---
 name: adr
 description: 設計判断とその理由を Architecture Decision Record として docs/adr/ に記録する。複数の選択肢を比較して1つを選んだとき、一見不自然な実装を理由があって採用したときに使う。
-argument-hint: <決定の要約>
-allowed-tools: Bash(ls docs/adr:*)
+argument-hint: [決定の要約。省略時は直近の変更から候補を挙げる]
+allowed-tools: Bash(ls docs/adr:*), Bash(git log:*), Bash(git diff:*), Bash(git status:*)
 ---
 
 # 設計判断を記録する
 
 決定: $ARGUMENTS
+
+**引数は省略できる。** 省略された場合は、記録すべき判断を自分で探す。
+
+```bash
+git log main..HEAD --format='%h %s%n%b'   # 作業ブランチのコミットログ
+git status --short
+git diff main...HEAD --stat
+```
+
+コミットログの Why と未コミットの変更を読み、下の「書くべきか判断する」に
+当てはまるものを探す。**候補を挙げて user に確認してから書く。**
+勝手に1つ選んで書き始めない。ADR は後から書き換えない文書なので、
+何を記録するかの選択自体が判断になる。
+
+候補が見つからなければ「記録すべき判断は見当たらない」と言って終わる。
+無理に絞り出さない。選択肢が実質1つしかなかった判断を書くとノイズになる。
 
 ## 書くべきか判断する
 
