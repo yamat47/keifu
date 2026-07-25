@@ -62,7 +62,7 @@ Red → Green → Refactor → test/lint/typecheck → /simplify → 動作確�
 - **整えてからコミットする。** 緑になった直後のコードをそのままコミットしない。
   `/simplify` を通し、反映したものだけを積む。「後で綺麗にする」は来ない
 - **動かしていないものを「できた」と言わない。** テストが緑なのと動くのは別。
-  コミット前に手で動かし、確認した内容を PR に書く。画面の変更にはスクリーンショットを付ける
+  コミット前に手で動かし、確認した内容を PR に書く。見た目はその場で目で見て確かめる
 - **コミットログには Why を書く。** What と How は diff にある → `/commit`
 - **コードコメントには Why not を書く。** コードを読めば分かることは書かない
   → [.claude/rules/code-comments.md](.claude/rules/code-comments.md)
