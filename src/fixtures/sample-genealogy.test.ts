@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { type Family } from '../domain/models'
+import { partnerIdsOf } from '../domain/models'
 
 import { sampleGenealogy } from './sample-genealogy'
 
@@ -8,9 +8,6 @@ const { persons, families, familyChildren } = sampleGenealogy
 
 const personIds = new Set(persons.map((p) => p.id))
 const familyIds = new Set(families.map((f) => f.id))
-
-const partnerIdsOf = (family: Family): number[] =>
-  [family.partner1Id, family.partner2Id].filter((id) => id !== null)
 
 const childrenOf = (familyId: number) => familyChildren.filter((fc) => fc.familyId === familyId)
 

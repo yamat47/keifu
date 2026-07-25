@@ -27,3 +27,7 @@ export const familySchema = z
   )
 
 export type Family = z.output<typeof familySchema>
+
+/** family の partner。片親のみの family では1人になる。左から右の順を保つ */
+export const partnerIdsOf = ({ partner1Id, partner2Id }: Family): number[] =>
+  [partner1Id, partner2Id].filter((id) => id !== null)
