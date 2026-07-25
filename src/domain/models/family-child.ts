@@ -12,7 +12,6 @@ export const familyChildSchema = z.object({
   // 養子は実親 family に biological、養親 family に adopted の2行を持つ。
   // どちらか一方だけを持つこと（実親が不明な養子）も許す
   relationType: z.enum(['biological', 'adopted']).default('biological'),
-  /** その family の中での兄弟順 */
   siblingOrder: z.int().min(0).default(0),
 })
 
