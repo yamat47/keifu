@@ -27,9 +27,16 @@ Cloudflare Workers + Static Assets + D1 で運用するが、
 | コマンド | 用途 |
 |---|---|
 | `/implement` | `docs/plan.md` の次のタスクを TDD で実装する |
+| `/simplify` | 変更を再利用・単純化・効率・抽象度の観点で見直して直す |
 | `/commit` | 変更を意味のある単位に分割し、Why を書いてコミットする |
 | `/pr` | プルリクエストを作る |
 | `/adr` | 設計判断とその理由を記録する |
+
+実装からコミットまでの流れは決まっている。**順番を飛ばさない。**
+
+```
+Red → Green → Refactor → test/lint/typecheck → /simplify → 動作確認 → /commit
+```
 
 ## 進め方の原則
 
@@ -40,6 +47,10 @@ Cloudflare Workers + Static Assets + D1 で運用するが、
 
 - **テスト駆動開発で進める。** Red → 失敗の確認 → Green → Refactor。
   `src/domain/**` と `worker/**` は例外なく TDD → [.claude/rules/tdd.md](.claude/rules/tdd.md)
+- **整えてからコミットする。** 緑になった直後のコードをそのままコミットしない。
+  `/simplify` を通し、反映したものだけを積む。「後で綺麗にする」は来ない
+- **動かしていないものを「できた」と言わない。** テストが緑なのと動くのは別。
+  コミット前に手で動かし、確認した内容を PR に書く。画面の変更にはスクリーンショットを付ける
 - **コミットログには Why を書く。** What と How は diff にある → `/commit`
 - **コードコメントには Why not を書く。** コードを読めば分かることは書かない
   → [.claude/rules/code-comments.md](.claude/rules/code-comments.md)
