@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-import { familySchema } from './family'
+import { familySchema, partnerIdsOf } from './family'
 import { familyChildSchema } from './family-child'
 import { personSchema } from './person'
 
@@ -19,3 +19,26 @@ export const genealogySchema = z.object({
 })
 
 export type Genealogy = z.output<typeof genealogySchema>
+
+/** 血縁の (親, 子)。どの family 経由かを持つ */
+export type BiologicalLink = { familyId: number; parentId: number; childId: number }
+
+/**
+ * 血縁の親子を1件ずつ取り出す。家系をグラフとして辿るものは全てここを通る。
+ *
+ * 養子リンクは含めない。含めると実親経由と養親経由で世代が矛盾するケースが
+ * 頻発し、ほとんどの家系で警告が出て使い物にならなくなる
+ * → docs/adr/0002-generation-assignment.md
+ */
+export function biologicalLinksOf({ families, familyChildren }: Genealogy): BiologicalLink[] {
+  const familiesById = new Map(families.map((family) => [family.id, family]))
+
+  return familyChildren.flatMap(({ familyId, childId, relationType }) => {
+    if (relationType !== 'biological') return []
+
+    const family = familiesById.get(familyId)
+    if (family === undefined) return []
+
+    return partnerIdsOf(family).map((parentId) => ({ familyId, parentId, childId }))
+  })
+}

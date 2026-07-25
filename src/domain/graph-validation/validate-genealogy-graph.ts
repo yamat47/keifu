@@ -1,10 +1,4 @@
-import {
-  partnerIdsOf,
-  type Family,
-  type FamilyChild,
-  type Genealogy,
-  type Person,
-} from '../models'
+import { biologicalLinksOf, partnerIdsOf, type Genealogy, type Person } from '../models'
 
 export type GraphViolation =
   | { kind: 'unknownPartner'; familyId: number; personId: number }
@@ -19,31 +13,18 @@ export type GraphViolation =
    */
   | { kind: 'ancestorLoop'; personIds: number[] }
 
-/** 血縁の親 → 子。養子リンクは辿らない */
-function biologicalChildrenOf(
-  familyChildren: FamilyChild[],
-  familiesById: Map<number, Family>,
-): Map<number, number[]> {
+/** 祖先ループを辿るための隣接リスト。養子リンクは biologicalLinksOf が既に落としている */
+function biologicalChildrenOf(genealogy: Genealogy): Map<number, number[]> {
   const childrenOf = new Map<number, number[]>()
 
-  for (const { familyId, childId, relationType } of familyChildren) {
-    // 養子縁組は血のつながりによる世代を変えないので、祖先ループの判定にも含めない。
-    // 含めると「孫を養子に取る」ような戸籍上ありうる登録が弾かれる
-    // → docs/adr/0002-generation-assignment.md
-    if (relationType !== 'biological') continue
+  for (const { parentId, childId } of biologicalLinksOf(genealogy)) {
+    // 自己親子は selfParent として報告済み。ここでも長さ1の循環として拾うと、
+    // 1つの誤登録に2種類の違反が出てどちらを直せばよいか分からなくなる
+    if (parentId === childId) continue
 
-    const family = familiesById.get(familyId)
-    if (family === undefined) continue
-
-    for (const parentId of partnerIdsOf(family)) {
-      // 自己親子は selfParent として報告済み。ここでも長さ1の循環として拾うと、
-      // 1つの誤登録に2種類の違反が出てどちらを直せばよいか分からなくなる
-      if (parentId === childId) continue
-
-      const children = childrenOf.get(parentId)
-      if (children === undefined) childrenOf.set(parentId, [childId])
-      else children.push(childId)
-    }
+    const children = childrenOf.get(parentId)
+    if (children === undefined) childrenOf.set(parentId, [childId])
+    else children.push(childId)
   }
 
   return childrenOf
@@ -84,11 +65,8 @@ function findAncestorLoops(persons: Person[], childrenOf: Map<number, number[]>)
  * 家系全体を突き合わせないと判定できない不正を検出する。
  * 1件でも返ったら登録を拒否する。
  */
-export function validateGenealogyGraph({
-  persons,
-  families,
-  familyChildren,
-}: Genealogy): GraphViolation[] {
+export function validateGenealogyGraph(genealogy: Genealogy): GraphViolation[] {
+  const { persons, families, familyChildren } = genealogy
   const personIds = new Set(persons.map(({ id }) => id))
   const familiesById = new Map(families.map((family) => [family.id, family]))
 
@@ -117,7 +95,7 @@ export function validateGenealogyGraph({
       personId: childId,
     }))
 
-  const childrenOf = biologicalChildrenOf(familyChildren, familiesById)
+  const childrenOf = biologicalChildrenOf(genealogy)
   const ancestorLoops = findAncestorLoops(persons, childrenOf).map((personIds) => ({
     kind: 'ancestorLoop' as const,
     personIds,
