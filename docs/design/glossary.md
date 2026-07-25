@@ -32,6 +32,10 @@
 | 兄弟軸 | `siblingAxis` | 抽象座標のうち、同世代内で並ぶ方向 |
 | 向き変換 | `orientation adapter` | 抽象座標を画面座標 `(x, y)` に変換する関数 |
 | 診断 | `diagnostics` | レイアウト計算中に検出した警告（世代の矛盾など） |
+| 世代割当 | `assignGenerations` | 家系から各人物の世代を求める。差分制約系として解く |
+| 世代指定 | `generationOverride` | 世代割当が矛盾したときの手動指定。正規化のあとに上書きする |
+| 婚姻制約の矛盾 | `marriageConflict` | 配偶者の世代を揃えられなかった。婚姻制約を落として続ける |
+| 血縁制約の矛盾 | `biologicalConflict` | 実親と子の世代差を1にできなかった。後の制約を落として続ける |
 | 婚姻線 | `MarriageLink` | partner 間を結ぶ二重線 |
 | 親子線 | `ChildLink` | 親 family から子へ引く線。実線 / 点線 |
 | 兄弟バー | sibling bar | 同一 family の子をまとめる横線 |
