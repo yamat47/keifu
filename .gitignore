@@ -1,0 +1,16 @@
+node_modules/
+dist/
+coverage/
+storybook-static/
+
+# Cloudflare
+.wrangler/
+.dev.vars
+.dev.vars.*
+
+# 個人設定。共有するものは .claude/settings.json に書く
+CLAUDE.local.md
+.claude/settings.local.json
+
+.DS_Store
+*.log
