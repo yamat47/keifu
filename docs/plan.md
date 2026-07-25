@@ -52,20 +52,21 @@ keifu/
 
 ## Phase 0: 骨組み
 
-- [ ] Vite + React + TypeScript のセットアップ
-- [ ] `@cloudflare/vite-plugin` + `wrangler.jsonc`（設定キーは公式ドキュメントで確認する）
-- [ ] Vitest のセットアップ
-- [ ] **ESLint の層境界ルール** — `.claude/rules/layer-boundaries.md` の内容を機械的に強制する。
+- [x] Vite + React + TypeScript のセットアップ
+- [x] `@cloudflare/vite-plugin` + `wrangler.jsonc`（設定キーは公式ドキュメントで確認する）
+- [x] Vitest のセットアップ
+- [x] **ESLint の層境界ルール** — `.claude/rules/layer-boundaries.md` の内容を機械的に強制する。
       後から入れると大量の違反が出て形骸化するので、コードを書く前に入れる
-- [ ] `src/domain/models/` の型定義と Zod スキーマ
-- [ ] `src/fixtures/` のサンプル家系15人 — 養子・再婚・片親・複数ルート・世代の矛盾を含める。
+- [x] `src/domain/models/` の型定義と Zod スキーマ
+- [x] `src/fixtures/` のサンプル家系15人 — 養子・再婚・片親・複数ルート・世代の矛盾を含める。
       レイアウトエンジンのテストと Storybook で共用する
 
 ## Phase 1: レイアウトエンジン（UI なし）
 
 仕様は [design/layout-engine.md](design/layout-engine.md)。全工程を TDD で進める。
 
-- [ ] 入力バリデーション（自己親子・祖先ループの検出）
+- [ ] 入力バリデーション（自己親子・祖先ループの検出）。
+      弾かれるべき不正な家系を `src/fixtures/` に追加する
 - [ ] 世代割当（差分制約系 / 負閉路検出 / `generation_override`）
 - [ ] 主系統の抽出
 - [ ] 横位置計算（夫婦の隣接・兄弟の連続・複数ルート）
