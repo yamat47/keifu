@@ -20,7 +20,9 @@ function biologicalDepth(): Map<number, number> {
   for (const { familyId, childId, relationType } of familyChildren) {
     if (relationType !== 'biological') continue
     const family = families.find((f) => f.id === familyId)
-    if (family) parentsOf.set(childId, partnerIdsOf(family))
+    // data-model.md は同一人物が複数の家系ラインに接続することを許している。
+    // 上書きすると実親 family を2つ持つ子の片方が消え、深さが浅く出る
+    if (family) parentsOf.set(childId, [...(parentsOf.get(childId) ?? []), ...partnerIdsOf(family)])
   }
 
   const memo = new Map<number, number>()
