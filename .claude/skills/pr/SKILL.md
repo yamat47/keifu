@@ -57,8 +57,6 @@ git diff main...HEAD --stat
 ## レビューで見てほしい点
 
 <自信がない箇所、判断が割れそうな箇所を明示する>
-
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
 ```
 
 - タイトルは日本語。何をしたかが1行で分かるもの
@@ -152,6 +150,4 @@ gh pr create --title "<タイトル>" --body "<本文>"
 矛盾検出時に「婚姻制約を落として続行する」という復旧方針が妥当かどうか。
 配偶者の高さがずれた家系図が出ることになるので、
 いっそエラーにして描画しない方が良いという判断もありえます。
-
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
 ```
