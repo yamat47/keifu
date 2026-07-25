@@ -25,7 +25,7 @@ const LAYER_ZONES = [
   {
     target: './src/features',
     from: './src',
-    except: ['./domain', './design-system', './features', './fixtures'],
+    except: ['./domain', './design-system', './features'],
     message: 'features が import してよいのは domain と design-system',
   },
   {
@@ -77,11 +77,7 @@ export default tseslint.config(
       'import-x/no-restricted-paths': ['error', { zones: LAYER_ZONES }],
       'import-x/order': [
         'error',
-        {
-          groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
-          'newlines-between': 'always',
-          alphabetize: { order: 'asc' },
-        },
+        { 'newlines-between': 'always', alphabetize: { order: 'asc' } },
       ],
     },
   },
@@ -89,9 +85,6 @@ export default tseslint.config(
   // domain: ロジックだけの世界
   {
     files: ['src/domain/**/*.ts'],
-    languageOptions: {
-      globals: {}, // window / document / fetch を含む DOM グローバルを一切与えない
-    },
     rules: {
       'no-restricted-globals': [
         'error',
@@ -130,7 +123,9 @@ export default tseslint.config(
 
   // features / pages: 見た目の調整は design-system 側の variant prop でやる
   {
-    files: ['src/features/**/*.tsx', 'src/pages/**/*.tsx'],
+    // features は「hooks + コンテナ」なので .ts も来る。CSS の import は
+    // 拡張子に関わらず禁じたい。JSX のセレクタは .ts では単に一致しない
+    files: ['src/features/**/*.{ts,tsx}', 'src/pages/**/*.{ts,tsx}'],
     rules: {
       'no-restricted-imports': ['error', NO_CSS_IMPORT],
       'no-restricted-syntax': [
