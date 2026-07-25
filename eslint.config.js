@@ -9,30 +9,34 @@ import tseslint from 'typescript-eslint'
  * 層の境界は .claude/rules/layer-boundaries.md が正。
  * ここはそれを機械的に強制するための写し。片方だけ直さない。
  */
+// fixtures は domain/models しか import しない葉なので、どこから読まれても
+// 依存の向きは壊れない。全ゾーンの except に入れる → ADR-0004
+const FIXTURES = './fixtures'
+
 const LAYER_ZONES = [
   {
     target: './src/domain',
     from: './src',
-    except: ['./domain'],
-    message: 'domain は他の層を import しない',
+    except: ['./domain', FIXTURES],
+    message: 'domain は fixtures 以外の層を import しない',
   },
   {
     target: './src/design-system',
     from: './src',
-    except: ['./design-system'],
-    message: 'design-system は domain も含め他の層を import しない',
+    except: ['./design-system', FIXTURES],
+    message: 'design-system は domain も含め、fixtures 以外の層を import しない',
   },
   {
     target: './src/features',
     from: './src',
-    except: ['./domain', './design-system', './features'],
-    message: 'features が import してよいのは domain と design-system',
+    except: ['./domain', './design-system', './features', FIXTURES],
+    message: 'features が import してよいのは domain と design-system と fixtures',
   },
   {
     target: './src/pages',
     from: './src',
-    except: ['./features', './design-system/layouts', './pages'],
-    message: 'pages が import してよいのは features と design-system/layouts',
+    except: ['./features', './design-system/layouts', './pages', FIXTURES],
+    message: 'pages が import してよいのは features と design-system/layouts と fixtures',
   },
   {
     target: './src/fixtures',
