@@ -78,19 +78,9 @@ describe('サンプル家系', () => {
     expect(familyIds.size).toBe(families.length)
   })
 
-  it('family の partner は全て収録済みの人物を指す', () => {
-    const unknown = families.flatMap(partnerIdsOf).filter((id) => !personIds.has(id))
-
-    expect(unknown).toEqual([])
-  })
-
-  it('子は全て収録済みの family と人物を指す', () => {
-    const orphans = familyChildren.filter(
-      (fc) => !personIds.has(fc.childId) || !familyIds.has(fc.familyId),
-    )
-
-    expect(orphans).toEqual([])
-  })
+  // 参照整合性・自己親子・祖先ループはここで手書きしない。
+  // validateGenealogyGraph が同じ判定を持っており、その検証は
+  // src/domain/graph-validation/ 側でサンプル家系に対して行っている
 
   it('同一 family の中で兄弟順が重複しない', () => {
     const collided = families.filter((family) => {

@@ -65,7 +65,7 @@ keifu/
 
 仕様は [design/layout-engine.md](design/layout-engine.md)。全工程を TDD で進める。
 
-- [ ] 入力バリデーション（自己親子・祖先ループ・参照整合性の検出）。
+- [x] 入力バリデーション（自己親子・祖先ループ・参照整合性の検出）。
       Phase 3 の書き込み API からも呼ぶので、レイアウト計算とは独立した純粋関数にする。
       弾かれるべき不正な家系を `src/fixtures/` に追加する
 - [ ] 世代割当（差分制約系 / 負閉路検出 / `generation_override`）
