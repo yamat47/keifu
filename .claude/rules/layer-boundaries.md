@@ -17,15 +17,26 @@ lint を無効化して回避しない。
 pages ──> features ──> domain
    │          │
    └──────────┴──> design-system ──> (何も import しない)
+
+fixtures ──> domain/models     （fixtures はどの層からも import してよい）
 ```
 
 | 層 | import してよいもの |
 |---|---|
-| `domain/` | **何も import しない**（外部ライブラリと `domain/` 内のみ） |
-| `design-system/` | `design-system/` 内のみ。`domain/` も禁止 |
-| `features/` | `domain/` と `design-system/` |
-| `pages/` | `features/` と `design-system/layouts` |
+| `domain/` | **何も import しない**（外部ライブラリと `domain/` 内、および `fixtures/`） |
+| `design-system/` | `design-system/` 内と `fixtures/`。`domain/` は禁止 |
+| `features/` | `domain/` と `design-system/` と `fixtures/` |
+| `pages/` | `features/` と `design-system/layouts` と `fixtures/` |
 | `fixtures/` | `domain/models` のみ（型のため） |
+
+**`fixtures/` はどの層からも import してよい。** → [ADR-0004](../../docs/adr/0004-fixtures-as-a-leaf.md)
+
+fixtures は `domain/models` しか import しない葉なので、
+どこから読まれても依存の向きは壊れない。むしろ層をまたいで同じサンプル家系を使うことが
+存在理由で、レイアウトエンジンのテストと Storybook が同じ家系を指している必要がある。
+
+その代わり **`fixtures/` に置いてよいのはデータだけ**。
+ロジックを置きたくなったら、それは `domain/` に属する。
 
 `design-system/` が `domain/` を import できない理由は、
 描画コンポーネントがドメインの型に依存すると、Storybook でモックを作るのが
