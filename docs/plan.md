@@ -70,7 +70,7 @@ keifu/
       弾かれるべき不正な家系を `src/fixtures/` に追加する
 - [x] 世代割当（差分制約系 / 矛盾の検出 / `generation_override`）
 - [x] 主系統の抽出
-- [ ] 横位置計算（夫婦の隣接・兄弟の連続・複数ルート）
+- [x] 横位置計算（夫婦の隣接・兄弟の連続・複数ルート）
 - [ ] 結線パス生成
 - [ ] 座標変換（orientation adapter、上→下）
 - [ ] 続柄の導出 `src/domain/kinship/`
