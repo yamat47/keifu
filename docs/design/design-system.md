@@ -1,0 +1,105 @@
+# デザインシステム
+
+見た目に関する規約の**正**。実装は `src/design-system/`。
+
+層の境界を守るための機械的なチェックは [.claude/rules/layer-boundaries.md](../../.claude/rules/layer-boundaries.md) にある。
+
+## 層構成
+
+```
+src/
+├── design-system/        # 見た目だけの世界
+│   ├── tokens/           # デザイントークン（CSS変数 + TS定数）
+│   ├── primitives/       # Button, TextField, Select, Modal, Toast, Card, Divider
+│   ├── layouts/          # PageShell / AdminShell / Stack / Cluster /
+│   │                     #   Toolbar / SidePanel / FullscreenCanvas
+│   └── tree/             # 家系図の描画コンポーネント
+│                         #   PersonNode, VerticalName, MarriageLink,
+│                         #   ChildLink, TreeCanvas, Legend
+├── domain/               # ロジックだけの世界（.ts のみ）
+│   ├── layout-engine/
+│   ├── kinship/
+│   └── models/
+├── features/             # 接続層（hooks + コンテナ）
+├── fixtures/             # サンプル家系（テストと Storybook で共用）
+└── pages/                # ルーティング
+```
+
+## 層のルール
+
+1. **`design-system/` は props のみで完結する。**
+   API 呼び出し・グローバル状態・ドメイン知識を持たない。
+2. **`design-system/` は UI 状態を持ってよい。**
+   ズーム量・パン位置・開閉・ホバーなど、見た目に閉じた状態は内部に持つ。
+   禁止するのは**ドメイン状態と副作用**（fetch・ストア・ルーティング）。
+3. **`features/` `pages/` `domain/` で `className` / `style` / CSS を書かない。**
+   調整が必要なら design-system 側に variant prop を足す。
+4. **色・余白・フォントサイズ・線種のマジックナンバー禁止。** すべてトークン経由。
+5. **`domain/` は他の層を import しない。** 拡張子は `.ts` のみ（`.tsx` 禁止）。
+
+ルール2 を明示している理由は、「design-system はロジック禁止」を額面通り取ると
+ズーム・パンを持つ `TreeCanvas` が作れなくなるため。禁止する対象は副作用であって状態ではない。
+
+## デザイントークン
+
+```css
+:root {
+  /* 色: 和の顔料由来で命名 */
+  --color-washi:    #f3ede1;  /* 背景: 生成り和紙 */
+  --color-ink:      #2b2722;  /* 文字・線: 墨 */
+  --color-ink-soft: #6b635a;  /* 補助線・注釈 */
+  --color-shu:      #a63a2a;  /* アクセント: 朱（選択・当主マーク） */
+  --color-kin:      #b28a4c;  /* 補助アクセント: 金茶 */
+
+  /* タイポグラフィ */
+  --font-display: "Shippori Mincho", serif;          /* 人名（縦書き） */
+  --font-body:    "Zen Kaku Gothic New", sans-serif; /* UI・編集画面 */
+
+  /* 線: SVG のプレゼンテーション属性に対応させる */
+  --stroke-color-relation: var(--color-ink);
+  --stroke-width-relation: 1.5;
+  --dash-biological: none;     /* 実子: 実線 */
+  --dash-adopted:    5 4;      /* 養子: 点線 */
+  --marriage-gap:    3;        /* 婚姻: 平行な2本の path の間隔 */
+
+  /* 余白スケール */
+  --space-1: 4px;  --space-2: 8px;  --space-3: 16px;
+  --space-4: 24px; --space-5: 40px; --space-6: 64px;
+}
+```
+
+### 線トークンが CSS の `border` 記法ではない理由
+
+家系図は SVG で描く。SVG の線は `stroke` / `stroke-width` / `stroke-dasharray` であり、
+`1.5px solid var(--color-ink)` のような `border` shorthand は一切解釈されない。
+
+`stroke` / `stroke-width` / `stroke-dasharray` は CSS プロパティなので `var()` は効く。
+ただし **SVG に `border: double` に相当するものは無い**ため、
+婚姻の二重線は `MarriageLink` が平行な2本の path を描くことで表現する。
+
+線種がそのまま家系図の意味（実子 / 養子 / 婚姻）を表すのがこのデザインシステムの核。
+凡例コンポーネント `Legend` はトークンから自動生成し、手書きの対応表を作らない。
+
+## 縦書きテキスト
+
+人名の縦書きは `VerticalName` コンポーネントが担当し、
+**1文字ずつ `<tspan x dy>` で配置する**。
+
+`writing-mode: vertical-rl` を SVG `<text>` に適用する方法は採らない。
+ブラウザ差が出やすく、行間や約物の制御が効かないため。
+`<foreignObject>` に HTML を埋める方法も採らない。Safari で崩れやすく、
+印刷や PNG 書き出しで壊れるため。
+
+人名は2〜6文字なので、文字単位の配置は現実的なコストで済む。
+
+## Storybook
+
+`design-system/` 配下のコンポーネントにストーリーを作る。
+**全コンポーネントを先に作るのではなく、必要になったものから追加する。**
+
+- トークン一覧（色・タイポグラフィ・線種・余白）を可視化するストーリーを置く
+- `tree/` は「実子 / 養子」「初婚 / 再婚」などバリエーションごとのストーリーを用意する
+- `src/fixtures/` のサンプル家系をテストと共用する
+- **モックデータだけでストーリーが書ける状態を維持する。**
+  ストーリーが書きにくくなったら、それは層の分離が崩れたサイン
+- ローカル開発用。本番デプロイには含めない
