@@ -19,18 +19,13 @@
     "noEmit": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "resolveJsonModule": true,
-
-    "paths": {
-      "@/*": ["./src/*"]
-    }
+    "resolveJsonModule": true
   },
   "include": [
     "src",
     "worker",
     "vite.config.ts",
     "vitest.config.ts",
-    "eslint.config.js",
     "worker-configuration.d.ts"
   ]
 }
