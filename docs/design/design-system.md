@@ -129,3 +129,15 @@ TS 側にも値を書くと、どちらかが必ず古くなる。定義と参�
 - **モックデータだけでストーリーが書ける状態を維持する。**
   ストーリーが書きにくくなったら、それは層の分離が崩れたサイン
 - ローカル開発用。本番デプロイには含めない
+
+### Storybook は直下の Vite 設定を読まない
+
+`.storybook/vite.config.ts` を持ち、`viteConfigPath` でそれを読ませている。
+直下の `vite.config.ts` を読ませると `@cloudflare/vite-plugin` が Storybook に入り、
+`wrangler.jsonc` の内容で壊れる余地ができる → [ADR-0007](../adr/0007-storybook-has-its-own-vite-config.md)
+
+**直下の `vite.config.ts` に足したプラグインは Storybook に効かない。**
+SVG のインライン化やフォントの処理を入れるときは両方に書く。
+
+ストーリーは `design-system/` 配下だけに置く。`features/` や `pages/` に
+ストーリーが生えたら、それは見た目が接続層に漏れたサイン。

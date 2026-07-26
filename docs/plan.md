@@ -41,6 +41,7 @@
 keifu/
 ├─ wrangler.jsonc          # Workers + Static Assets + D1 binding
 ├─ vite.config.ts          # @cloudflare/vite-plugin
+├─ .storybook/             # コンポーネントカタログ。専用の Vite 設定を持つ
 ├─ migrations/             # wrangler d1 migrations
 ├─ worker/                 # Hono: /api/* + 静的アセット配信
 ├─ src/                    # design/design-system.md の層構成
@@ -85,6 +86,12 @@ keifu/
 仕様は [design/design-system.md](design/design-system.md)。
 
 - [x] デザイントークン
+- [x] **Storybook のセットアップとトークン一覧のストーリー。**
+      `.claude/rules/tdd.md` が design-system 層の検証手段をストーリーと定めているので、
+      最初の描画コンポーネントより先に入れる → [ADR-0007](adr/0007-storybook-has-its-own-vite-config.md)
+- [ ] **Web フォントの読み込み。** `--font-display` / `--font-body` は
+      トークンに名前があるだけで、実体がどこにも読み込まれていない。
+      今はどちらもシステムの serif / sans-serif に落ちている
 - [ ] `VerticalName`（1文字ずつ `<tspan>` 配置）
 - [ ] `PersonNode`
 - [ ] `MarriageLink`（平行2本の path で二重線）
