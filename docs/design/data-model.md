@@ -88,6 +88,9 @@ CREATE INDEX ix_family_children_child ON family_children(child_id);
 
 `partner1_id` / `partner2_id` を ID 昇順に正規化してはいけない。左右の配置順という意味を持つ。
 
+ただし**左右が守られるのは単婚のときだけ**。再婚した人物は配偶者に挟まれて配置されるため、
+どちらか一方の family で左右が入れ替わる → [ADR-0005](../adr/0005-remarriage-places-host-between-spouses.md)
+
 ### family_children
 
 | カラム | 意図 |
