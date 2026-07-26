@@ -83,6 +83,28 @@ TS 側にも値を書くと、どちらかが必ず古くなる。定義と参�
 `tokens/index.ts` が `tokens.css` を import する。トークンを使えば定義が必ず載る形にして、
 エントリが増えるたびに読み込みを書き足さなくて済むようにしている。
 
+### 書体は自前で配信する
+
+`--font-display` / `--font-body` は書体の**名前**しか持たない。実体は
+[`@fontsource`](https://fontsource.org/) の npm パッケージから読み込む。
+Google Fonts の CDN は使わない → [ADR-0008](../adr/0008-self-hosted-sliced-web-fonts.md)
+
+- 読み込むのは `unicode-range` で分割された CSS（`@fontsource/<font>/400.css`）。
+  ページに出た文字を含む断片だけがダウンロードされる
+- ウェイトは 400 だけ。トークンにウェイトの軸が無いので、他を読んでも使えない
+- 読み込みは `tokens/index.ts` が随伴させる。`tokens.css` と同じ理由で、
+  トークンを使えば書体が必ず載る形にする
+
+**書体の読み込みを Vite のプラグインや `index.html` の `<link>` でやらない。**
+design-system の import に相乗りさせておけば、`pnpm dev` と Storybook の
+どちらにも同じものが載る。Storybook は直下の `vite.config.ts` を読まないので、
+プラグインや HTML に置くと片方だけ書体が違う状態になる（後述「Storybook」）。
+
+トークンが名指す書体名と、読み込んだ `@font-face` の `font-family` が
+一致していることは `fonts.test.ts` が両方向で突き合わせる。
+綴りがずれても画面はフォールバックの serif / sans-serif で普通に出るので、
+目視では気づけない。
+
 ### ノードの寸法
 
 **`PersonNode` は `SIBLING_PITCH` / `GENERATION_PITCH` を超えて広がらない。**
