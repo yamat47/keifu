@@ -89,9 +89,10 @@ keifu/
 - [x] **Storybook のセットアップとトークン一覧のストーリー。**
       `.claude/rules/tdd.md` が design-system 層の検証手段をストーリーと定めているので、
       最初の描画コンポーネントより先に入れる → [ADR-0007](adr/0007-storybook-has-its-own-vite-config.md)
-- [x] **Web フォントの読み込み。** `@fontsource` から `unicode-range` で分割された
-      ものを読む。トークンの import に相乗りさせ、Storybook にも同じものが載る形にする
-      → [ADR-0008](adr/0008-self-hosted-sliced-web-fonts.md)
+- [x] **書体はブラウザ既定に任せる。** Web フォントは読み込まない。
+      一度入れたが、まだ要らないコストだと判断して外した
+      → [ADR-0009](adr/0009-browser-default-fonts.md)。
+      入れ直すときは [ADR-0008](adr/0008-self-hosted-sliced-web-fonts.md) から読む
 - [ ] `VerticalName`（1文字ずつ `<tspan>` 配置）
 - [ ] `PersonNode`
 - [ ] `MarriageLink`（平行2本の path で二重線）
