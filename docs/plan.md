@@ -135,10 +135,10 @@ keifu/
 
 Phase の順序に縛られない。手が空いたとき、あるいは必要になったときに入れる。
 
-- [ ] **GitHub Actions で `pnpm test` / `pnpm lint` / `pnpm typecheck` を回す。**
-      現状 PR に付くチェックはシークレット検出だけで、テストは1行も走っていない。
-      `/ship` はテストを回す CI が無い間、ローカルの結果をマージの根拠にしている。
-      これが入るまで、緑のチェックマークは「テストが通った」を意味しない
+- [x] **GitHub Actions で `pnpm test` / `pnpm lint` / `pnpm typecheck` を回す。**
+      `test` / `lint` / `typecheck` を独立したチェックとして PR に付ける。
+      1つが落ちても残りの結果が出るので、どこが壊れたかが1回で分かる。
+      Node のバージョンは `.nvmrc` を正とし、CI とローカルで同じものを使う
 
 ---
 

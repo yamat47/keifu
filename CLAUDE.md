@@ -96,7 +96,10 @@ pnpm storybook                                       # コンポーネントカ�
 pnpm exec wrangler d1 migrations apply keifu --local # マイグレーション適用
 ```
 
-パッケージマネージャは **pnpm**。
+パッケージマネージャは **pnpm**。Node のバージョンは `.nvmrc` が正で、CI も同じものを読む。
+
+上の4つは PR ごとに GitHub Actions が回す（`.github/workflows/ci.yml`）。
+`test` / `lint` / `typecheck` が独立したチェックとして付く。
 
 ## 注意
 
