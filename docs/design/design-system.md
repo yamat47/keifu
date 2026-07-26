@@ -68,6 +68,21 @@ src/
 }
 ```
 
+### 値は CSS が持ち、TS は名前だけを持つ
+
+実装は `src/design-system/tokens/` の2ファイルに分かれる。
+
+- `tokens.css` — 上の `:root` そのもの。**値を書いてよいのはここだけ**
+- `tokens.ts` — `tokens.color.ink === 'var(--color-ink)'` のように参照だけを持つ。
+  コンポーネントは色・線種・余白をこれ経由で指定する
+
+TS 側にも値を書くと、どちらかが必ず古くなる。定義と参照に過不足が無いことは
+`tokens.test.ts` が両方向で突き合わせる。定義の無い `var()` は無言で効かないので、
+目視では気づけない。
+
+`tokens/index.ts` が `tokens.css` を import する。トークンを使えば定義が必ず載る形にして、
+エントリが増えるたびに読み込みを書き足さなくて済むようにしている。
+
 ### ノードの寸法
 
 **`PersonNode` は `SIBLING_PITCH` / `GENERATION_PITCH` を超えて広がらない。**
