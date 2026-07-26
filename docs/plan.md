@@ -84,7 +84,7 @@ keifu/
 
 仕様は [design/design-system.md](design/design-system.md)。
 
-- [ ] デザイントークン
+- [x] デザイントークン
 - [ ] `VerticalName`（1文字ずつ `<tspan>` 配置）
 - [ ] `PersonNode`
 - [ ] `MarriageLink`（平行2本の path で二重線）
