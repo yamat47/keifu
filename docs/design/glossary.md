@@ -44,6 +44,9 @@
 | 線種 | `LinkKind` | `marriage` / `biological` / `adopted` / `siblingBar` |
 | 形状 | `Segment` / `CubicBezier` | 経路の形。直線は2点、3次ベジェは4点で、点数は型で固定する |
 | 抽象座標の点 | `AbstractPoint` | `(generationAxis, siblingAxis)` の1点 |
+| 画面座標の点 | `ScreenPoint` | `(x, y)` の1点。向き変換の出力 |
+| 画面座標の結線 | `ScreenLink` | 経路を画面座標に移した結線 |
+| 上→下の向き | `topToBottom` | 世代が上から下へ進む向き変換。現時点で唯一の実装 |
 | family の基点 | `familyAnchor` | 婚姻線の中点。子へ降りる幹の根本になる |
 | 婚姻線 | `MarriageLink` | partner 間を結ぶ二重線 |
 | 親子線 | `ChildLink` | 親 family から子へ引く線。実線 / 点線 |
