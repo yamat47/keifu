@@ -33,3 +33,4 @@ ADR として独立させる。
 | [0004](0004-fixtures-as-a-leaf.md) | fixtures を全層から import できる葉として扱う | Accepted |
 | [0005](0005-remarriage-places-host-between-spouses.md) | 再婚ではホストを配偶者で挟んで配置する | Accepted |
 | [0006](0006-layout-does-not-validate.md) | レイアウト計算はグラフ検証を呼ばない | Accepted |
+| [0007](0007-storybook-has-its-own-vite-config.md) | Storybook は専用の Vite 設定を持つ | Accepted |
