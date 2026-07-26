@@ -1,9 +1,0 @@
-/*
- * 書体の実体。tokens.css の --font-display / --font-body は名前しか持たない。
- *
- * 400.css は unicode-range で約120個に割れているもの。japanese-400.css
- * （日本語一括）に差し替えてはいけない。ウェイトを増やしてもいけない。
- * どちらの理由も docs/adr/0008-self-hosted-sliced-web-fonts.md。
- */
-@import '@fontsource/shippori-mincho/400.css';
-@import '@fontsource/zen-kaku-gothic-new/400.css';
