@@ -105,16 +105,16 @@ describe('assignSiblingPositions', () => {
     expect(at(11)).toBe(at(5) - 1)
   })
 
-  it('再婚した人物の配偶者は、婚姻順に並ぶ', () => {
+  it('再婚した人物は、婚姻順に並んだ配偶者のあいだに置かれる', () => {
     // 春彦（3）の初婚が千代（6）、再婚が佳代（9）
-    expect([3, 6, 9].map(at)).toEqual([0, 1, 2])
+    expect([6, 3, 9].map(at)).toEqual([0, 1, 2])
   })
 
   it('配偶者の並びは family の ID 順ではなく婚姻順に従う', () => {
     const at = positionsIn(remarriageAgainstFamilyIds)
 
-    // 初婚の千代（2）が先。family の ID では佳代（3）の側が小さい
-    expect([1, 2, 3].map(at)).toEqual([0, 1, 2])
+    // 初婚の千代（2）が左。family の ID では佳代（3）の側が小さい
+    expect([2, 1, 3].map(at)).toEqual([0, 1, 2])
   })
 
   it('2度婚姻した婚入者が隣接するのは、自分にとって最初の婚姻の相手', () => {

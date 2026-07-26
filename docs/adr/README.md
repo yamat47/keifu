@@ -31,3 +31,4 @@ ADR として独立させる。
 | [0002](0002-generation-assignment.md) | 世代割当を差分制約系として解く | Accepted |
 | [0003](0003-workers-and-local-dev.md) | Cloudflare Workers + Static Assets を使い、ローカルは Vite プラグインで動かす | Accepted |
 | [0004](0004-fixtures-as-a-leaf.md) | fixtures を全層から import できる葉として扱う | Accepted |
+| [0005](0005-remarriage-places-host-between-spouses.md) | 再婚ではホストを配偶者で挟んで配置する | Accepted |
