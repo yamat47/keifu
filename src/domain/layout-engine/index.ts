@@ -14,4 +14,11 @@ export {
   type Placement,
   type Segment,
 } from './build-link-paths'
+export {
+  orientLinks,
+  topToBottom,
+  type Orientation,
+  type ScreenLink,
+  type ScreenPoint,
+} from './orientation'
 export { selectPrimaryFamilies, type PrimaryFamilies } from './select-primary-families'

@@ -74,7 +74,7 @@ keifu/
 - [x] 結線パス生成
 - [x] **再婚の線が初婚の線と重なる問題を解く。** ホストを配偶者で挟んで配置する
       → [ADR-0005](adr/0005-remarriage-places-host-between-spouses.md)
-- [ ] 座標変換（orientation adapter、上→下）
+- [x] 座標変換（orientation adapter、上→下）
 - [ ] 続柄の導出 `src/domain/kinship/`
 - [ ] layout-engine.md のテスト観点を全て通す
 
