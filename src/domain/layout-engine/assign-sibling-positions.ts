@@ -74,6 +74,31 @@ function attachSpouses(families: Family[], primaryFamilies: PrimaryFamilies): Ma
   return hostOf
 }
 
+/** ホストに付く配偶者。婚姻順に並んでいることを前提とする */
+type AttachedSpouse = { spouseId: number; hostIsPartner1: boolean }
+
+/**
+ * ホストと配偶者を1行に並べる。
+ *
+ * 配偶者が2人以上なら、ホストを片側に寄せず1人目と2人目のあいだに置く。
+ * 片側に積むと再婚の婚姻線が初婚の配偶者を貫き、兄弟バーが1本に繋がる。
+ * この場合 partner1 が左は守れない → docs/adr/0005-remarriage-places-host-between-spouses.md
+ *
+ * 3人目以降は2人目の外側に積むので、貫通が残る。一列に並んだ4人の中央から
+ * 3方向へ交差なく線を引くことはできず、解くには線に高さのオフセットが要る。
+ * 3度以上の婚姻は稀なので、2度目までを正しく描くほうを採っている。
+ */
+function lineUp(hostId: number, spouses: AttachedSpouse[]): number[] {
+  const [first, ...remarriages] = spouses
+  if (first === undefined) return [hostId]
+
+  if (remarriages.length === 0) {
+    return first.hostIsPartner1 ? [hostId, first.spouseId] : [first.spouseId, hostId]
+  }
+
+  return [first.spouseId, hostId, ...remarriages.map(({ spouseId }) => spouseId)]
+}
+
 /** 家系を配偶ブロックの森に組み替える。返すのはルートのブロックを左から並べたもの */
 function buildSpouseBlocks(
   genealogy: Genealogy,
@@ -104,16 +129,14 @@ function buildSpouseBlocks(
 
   const buildBlock = (hostId: number): SpouseBlock => {
     const owned = familiesOfHost.get(hostId) ?? []
-    const members = [hostId]
-
-    for (const family of owned) {
+    const spouses = owned.flatMap((family) => {
       const spouseId = partnerIdsOf(family).find((id) => hostOf.get(id) === hostId)
-      if (spouseId === undefined) continue
+      if (spouseId === undefined) return []
 
-      if (family.partner1Id === hostId) members.push(spouseId)
-      else members.unshift(spouseId)
-    }
+      return [{ spouseId, hostIsPartner1: family.partner1Id === hostId }]
+    })
 
+    const members = lineUp(hostId, spouses)
     const children = owned.flatMap(({ id }) => primaryChildIdsOf(id)).map(buildBlock)
 
     return { members, children, width: Math.max(members.length, totalWidthOf(children)) }
