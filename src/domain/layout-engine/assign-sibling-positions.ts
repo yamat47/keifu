@@ -1,4 +1,4 @@
-import { partnerIdsOf, type Family, type Genealogy } from '../models'
+import { childrenByFamily, partnerIdsOf, type Family, type Genealogy } from '../models'
 
 import type { PrimaryFamilies } from './select-primary-families'
 
@@ -76,9 +76,10 @@ function attachSpouses(families: Family[], primaryFamilies: PrimaryFamilies): Ma
 
 /** 家系を配偶ブロックの森に組み替える。返すのはルートのブロックを左から並べたもの */
 function buildSpouseBlocks(
-  { persons, families, familyChildren }: Genealogy,
+  genealogy: Genealogy,
   primaryFamilies: PrimaryFamilies,
 ): SpouseBlock[] {
+  const { persons, families } = genealogy
   const hostOf = attachSpouses(families, primaryFamilies)
   const isBlockHost = (id: number) => !hostOf.has(id)
 
@@ -95,14 +96,11 @@ function buildSpouseBlocks(
     owned.sort((a, b) => partnerOrderOf(a, hostId) - partnerOrderOf(b, hostId) || a.id - b.id)
   }
 
-  // 先に全体を兄弟順で並べる。グループ化は相対順を保つので family ごとの並べ替えは要らない
-  const childIdsOfFamily = new Map<number, number[]>()
-  for (const { familyId, childId } of [...familyChildren].sort(
-    (a, b) => a.siblingOrder - b.siblingOrder || a.childId - b.childId,
-  )) {
-    if (primaryFamilies.get(childId) !== familyId) continue
-    appendTo(childIdsOfFamily, familyId, childId)
-  }
+  const childrenOfFamily = childrenByFamily(genealogy)
+  const primaryChildIdsOf = (familyId: number): number[] =>
+    (childrenOfFamily.get(familyId) ?? [])
+      .filter(({ childId }) => primaryFamilies.get(childId) === familyId)
+      .map(({ childId }) => childId)
 
   const buildBlock = (hostId: number): SpouseBlock => {
     const owned = familiesOfHost.get(hostId) ?? []
@@ -116,7 +114,7 @@ function buildSpouseBlocks(
       else members.unshift(spouseId)
     }
 
-    const children = owned.flatMap(({ id }) => childIdsOfFamily.get(id) ?? []).map(buildBlock)
+    const children = owned.flatMap(({ id }) => primaryChildIdsOf(id)).map(buildBlock)
 
     return { members, children, width: Math.max(members.length, totalWidthOf(children)) }
   }

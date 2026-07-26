@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 import { familySchema, partnerIdsOf } from './family'
-import { familyChildSchema } from './family-child'
+import { familyChildSchema, type FamilyChild } from './family-child'
 import { personSchema } from './person'
 
 /**
@@ -19,6 +19,27 @@ export const genealogySchema = z.object({
 })
 
 export type Genealogy = z.output<typeof genealogySchema>
+
+/**
+ * family ごとの子を兄弟順に並べて引けるようにする。
+ *
+ * 兄弟順の全順序（`siblingOrder` が同値なら `childId`）はここでだけ決める。
+ * 2箇所に散らすと、配置上の兄弟の並びと結線の並びが黙ってずれる。
+ */
+export function childrenByFamily({ familyChildren }: Genealogy): Map<number, FamilyChild[]> {
+  const grouped = new Map<number, FamilyChild[]>()
+
+  // 先に全体を並べてからグループ化する。グループ化は相対順を保つので family ごとの整列は要らない
+  for (const membership of [...familyChildren].sort(
+    (a, b) => a.siblingOrder - b.siblingOrder || a.childId - b.childId,
+  )) {
+    const siblings = grouped.get(membership.familyId)
+    if (siblings === undefined) grouped.set(membership.familyId, [membership])
+    else siblings.push(membership)
+  }
+
+  return grouped
+}
 
 /** 血縁の (親, 子)。どの family 経由かを持つ */
 export type BiologicalLink = { familyId: number; parentId: number; childId: number }

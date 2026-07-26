@@ -39,9 +39,15 @@
 | ホスト | `host` | 配偶ブロックの中心になる人物。主系統を持つ側が務め、配偶者はその隣に付く |
 | 婚姻制約の矛盾 | `marriageConflict` | 配偶者の世代を揃えられなかった。婚姻制約を落として続ける |
 | 血縁制約の矛盾 | `biologicalConflict` | 実親と子の世代差を1にできなかった。後の制約を落として続ける |
+| 結線パス生成 | `buildLinkPaths` | 配置の確定した家系から、線種ごとの経路を求める |
+| 結線 | `LayoutLink` | 線種・形状・経路を持つ1本の線。結線パス生成の出力 |
+| 線種 | `LinkKind` | `marriage` / `biological` / `adopted` / `siblingBar` |
+| 形状 | `Segment` / `CubicBezier` | 経路の形。直線は2点、3次ベジェは4点で、点数は型で固定する |
+| 抽象座標の点 | `AbstractPoint` | `(generationAxis, siblingAxis)` の1点 |
+| family の基点 | `familyAnchor` | 婚姻線の中点。子へ降りる幹の根本になる |
 | 婚姻線 | `MarriageLink` | partner 間を結ぶ二重線 |
 | 親子線 | `ChildLink` | 親 family から子へ引く線。実線 / 点線 |
-| 兄弟バー | sibling bar | 同一 family の子をまとめる横線 |
+| 兄弟バー | `siblingBar` | 同一 family の子をまとめる横線と、基点からそこへ降りる幹 |
 
 ## 使い分けに注意する語
 

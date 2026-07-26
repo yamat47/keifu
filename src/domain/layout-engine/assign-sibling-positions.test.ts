@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import { sampleGenealogy } from '../../fixtures/sample-genealogy'
+import { shuffledSiblings, simpleCouple } from '../../fixtures/small-genealogies'
 import { genealogySchema, type Genealogy } from '../models'
 
 import { assignGenerations } from './assign-generations'
@@ -23,36 +24,6 @@ const positionsIn = (genealogy: Genealogy) => {
     return position
   }
 }
-
-/** 1 と 2 の夫婦に、子 3 が1人 */
-const simpleCouple = genealogySchema.parse({
-  persons: [
-    { id: 1, familyName: '桐生', givenName: '宗一郎', sex: 'm' },
-    { id: 2, familyName: '桐生', givenName: '志乃', sex: 'f' },
-    { id: 3, familyName: '桐生', givenName: '春彦', sex: 'm' },
-  ],
-  families: [{ id: 1, partner1Id: 1, partner2Id: 2 }],
-  familyChildren: [{ familyId: 1, childId: 3 }],
-})
-
-/**
- * 1 の子 4, 2, 3。兄弟順が入力順とも ID 順とも食い違うように並べてある。
- * どちらかに一致していると、兄弟順で並べ替えていない実装でも通ってしまう。
- */
-const shuffledSiblings = genealogySchema.parse({
-  persons: [
-    { id: 1, familyName: '桐生', givenName: '宗一郎', sex: 'm' },
-    { id: 2, familyName: '桐生', givenName: '夏彦', sex: 'm' },
-    { id: 3, familyName: '桐生', givenName: '秋乃', sex: 'f' },
-    { id: 4, familyName: '桐生', givenName: '春彦', sex: 'm' },
-  ],
-  families: [{ id: 1, partner1Id: 1, partner2Id: null }],
-  familyChildren: [
-    { familyId: 1, childId: 3, siblingOrder: 2 },
-    { familyId: 1, childId: 4, siblingOrder: 0 },
-    { familyId: 1, childId: 2, siblingOrder: 1 },
-  ],
-})
 
 /**
  * 1 が 2 → 3 の順に婚姻しているが、family の ID は逆に振ってある。
