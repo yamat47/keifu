@@ -12,19 +12,34 @@ export type ChildLinkKind = FamilyChild['relationType']
 export type LinkKind = ChildLinkKind | 'marriage' | 'siblingBar'
 
 /** 婚姻線・幹・横線・親子線は、どれも2点で決まる */
-export type Segment = readonly [AbstractPoint, AbstractPoint]
+export type Segment<P = AbstractPoint> = readonly [P, P]
 
 /** 3次ベジェ。始点・制御点2つ・終点 */
-export type CubicBezier = readonly [AbstractPoint, AbstractPoint, AbstractPoint, AbstractPoint]
+export type CubicBezier<P = AbstractPoint> = readonly [P, P, P, P]
 
 /**
  * 線種ごとに持てる形を型で分けている。全リンクを1つの形にすると、描画側が
  * 「兄弟バーの childId」や「直線の3点目」という有り得ない値を毎回捌くことになる。
+ *
+ * 点の型を外から与えられるのは、向き変換の前後で線の構造が変わらないため。
+ * 画面座標版を別の union として書くと、線種を足すたびに2箇所を直すことになる。
  */
-export type LayoutLink =
-  | { kind: 'marriage' | 'siblingBar'; shape: 'polyline'; points: Segment; familyId: number }
-  | { kind: ChildLinkKind; shape: 'polyline'; points: Segment; familyId: number; childId: number }
-  | { kind: ChildLinkKind; shape: 'curve'; points: CubicBezier; familyId: number; childId: number }
+export type LayoutLink<P = AbstractPoint> =
+  | { kind: 'marriage' | 'siblingBar'; shape: 'polyline'; points: Segment<P>; familyId: number }
+  | {
+      kind: ChildLinkKind
+      shape: 'polyline'
+      points: Segment<P>
+      familyId: number
+      childId: number
+    }
+  | {
+      kind: ChildLinkKind
+      shape: 'curve'
+      points: CubicBezier<P>
+      familyId: number
+      childId: number
+    }
 
 /** 1〜3 の工程が確定させた配置 */
 export type Placement = {
