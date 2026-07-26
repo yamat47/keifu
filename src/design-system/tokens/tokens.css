@@ -10,9 +10,11 @@
   --color-shu: #a63a2a; /* アクセント: 朱（選択・当主マーク） */
   --color-kin: #b28a4c; /* 補助アクセント: 金茶 */
 
-  /* タイポグラフィ */
-  --font-display: 'Shippori Mincho', serif; /* 人名（縦書き） */
-  --font-body: 'Zen Kaku Gothic New', sans-serif; /* UI・編集画面 */
+  /* タイポグラフィ: 書体名を書かない。実体を読み込まない名前は、
+     フォールバックで普通に描かれてしまうので気づけない
+     → docs/adr/0009-browser-default-fonts.md */
+  --font-display: serif; /* 人名（縦書き）。日本語環境では明朝体に解決される */
+  --font-body: sans-serif; /* UI・編集画面 */
 
   /* 線: SVG は border を解釈しないので stroke 系に対応させる */
   --stroke-color-relation: var(--color-ink);

@@ -207,12 +207,6 @@ importers:
 
   .:
     dependencies:
-      '@fontsource/shippori-mincho':
-        specifier: ^5.3.0
-        version: 5.3.0
-      '@fontsource/zen-kaku-gothic-new':
-        specifier: ^5.3.0
-        version: 5.3.0
       hono:
         specifier: ^4.12.32
         version: 4.12.32
@@ -635,12 +629,6 @@ packages:
   '@eslint/plugin-kit@0.7.2':
     resolution: {integrity: sha512-+CNAzxglkrpNf/kKywqQfk74QjtceuOE7Qm+AF8miRvPF/wmmK5+OJOgVh3AVTT3RP2mH3+FOaxlE5v72owk0A==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
-
-  '@fontsource/shippori-mincho@5.3.0':
-    resolution: {integrity: sha512-S41kRxQuubAaYss+LeXu0IOc02RQwsPaJbR1cWZx4VV15hXaYZViH3WAve9HpDVFqKYd/BVk86Bg7lp9ytV3KQ==}
-
-  '@fontsource/zen-kaku-gothic-new@5.3.0':
-    resolution: {integrity: sha512-2t88gAaUkqIAFARfO8GkT1x57QBRx8A0pWeB0CIrIahnzdanWjcV4thPCSv9BJmpeRndq6qbFx1KYglHykiPhw==}
 
   '@humanfs/core@0.19.2':
     resolution: {integrity: sha512-UhXNm+CFMWcbChXywFwkmhqjs3PRCmcSa/hfBgLIb7oQ5HNb1wS0icWsGtSAUNgefHeI+eBrA8I1fxmbHsGdvA==}
@@ -2915,10 +2903,6 @@ snapshots:
     dependencies:
       '@eslint/core': 1.2.1
       levn: 0.4.1
-
-  '@fontsource/shippori-mincho@5.3.0': {}
-
-  '@fontsource/zen-kaku-gothic-new@5.3.0': {}
 
   '@humanfs/core@0.19.2':
     dependencies:

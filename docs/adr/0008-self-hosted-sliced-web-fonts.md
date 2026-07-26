@@ -1,7 +1,10 @@
 # ADR-0008: 書体は分割された自前配信のものを読む
 
-- Status: Accepted
+- Status: Superseded by [ADR-0009](0009-browser-default-fonts.md)
 - Date: 2026-07-27
+
+> 書体の読み込み自体をやめ、ブラウザ既定に任せることにした → [ADR-0009](0009-browser-default-fonts.md)。
+> **この ADR の測定結果と選択の経緯は、書体を入れ直すときの出発点として残す。**
 
 ## 状況
 

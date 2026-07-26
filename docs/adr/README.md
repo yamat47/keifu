@@ -34,4 +34,5 @@ ADR として独立させる。
 | [0005](0005-remarriage-places-host-between-spouses.md) | 再婚ではホストを配偶者で挟んで配置する | Accepted |
 | [0006](0006-layout-does-not-validate.md) | レイアウト計算はグラフ検証を呼ばない | Accepted |
 | [0007](0007-storybook-has-its-own-vite-config.md) | Storybook は専用の Vite 設定を持つ | Accepted |
-| [0008](0008-self-hosted-sliced-web-fonts.md) | 書体は分割された自前配信のものを読む | Accepted |
+| [0008](0008-self-hosted-sliced-web-fonts.md) | 書体は分割された自前配信のものを読む | Superseded by ADR-0009 |
+| [0009](0009-browser-default-fonts.md) | 書体はブラウザ既定に任せる | Accepted |
