@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  # PR は最新の push だけ見ればよい。main は途中の実行も捨てない。
+  # マージ後の main が緑であることは、コミット単位で残っていてほしい
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  check:
+    name: ${{ matrix.task }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      # 1つ落ちても残りを走らせる。型エラーとテストの失敗が同時に起きたとき、
+      # 片方だけ直して push し直す往復を避けたい
+      fail-fast: false
+      matrix:
+        task: [test, lint, typecheck]
+
+    steps:
+      - uses: actions/checkout@v7
+
+      # setup-node の cache: pnpm は pnpm が PATH に居ることを前提にするので、
+      # この順序を入れ替えない
+      - uses: pnpm/action-setup@v6
+        with:
+          # package.json の devEngines.packageManager と揃える。
+          # action-setup が読むのは packageManager フィールドだけで、
+          # devEngines はまだ見ないため、ここに書くしかない
+          version: 11
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm ${{ matrix.task }}
