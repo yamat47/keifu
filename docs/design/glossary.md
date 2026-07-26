@@ -41,6 +41,8 @@
 | 血縁制約の矛盾 | `biologicalConflict` | 実親と子の世代差を1にできなかった。後の制約を落として続ける |
 | 結線パス生成 | `buildLinkPaths` | 配置の確定した家系から、線種ごとの経路を求める |
 | 結線 | `LayoutLink` | 線種・形状・経路を持つ1本の線。結線パス生成の出力 |
+| 線種 | `LinkKind` | `marriage` / `biological` / `adopted` / `siblingBar` |
+| 形状 | `Segment` / `CubicBezier` | 経路の形。直線は2点、3次ベジェは4点で、点数は型で固定する |
 | 抽象座標の点 | `AbstractPoint` | `(generationAxis, siblingAxis)` の1点 |
 | family の基点 | `familyAnchor` | 婚姻線の中点。子へ降りる幹の根本になる |
 | 婚姻線 | `MarriageLink` | partner 間を結ぶ二重線 |
