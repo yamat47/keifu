@@ -28,6 +28,9 @@
 
 | 日本語 | 識別子 | 意味 |
 |---|---|---|
+| レイアウト計算 | `computeLayout` | 世代割当から向き変換までを繋ぐ入口。描画側が呼ぶ唯一の関数 |
+| レイアウト | `Layout` | レイアウト計算の出力。`nodes` / `links` / `diagnostics` を持つ |
+| ノード | `LayoutNode` | 画面座標に置かれた1人。`personId` と `(x, y)` |
 | 世代軸 | `generationAxis` | 抽象座標のうち、世代が進む方向 |
 | 兄弟軸 | `siblingAxis` | 抽象座標のうち、同世代内で並ぶ方向 |
 | 向き変換 | `orientation adapter` | 抽象座標を画面座標 `(x, y)` に変換する関数 |

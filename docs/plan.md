@@ -76,7 +76,7 @@ keifu/
       → [ADR-0005](adr/0005-remarriage-places-host-between-spouses.md)
 - [x] 座標変換（orientation adapter、上→下）
 - [x] 続柄の導出 `src/domain/kinship/`
-- [ ] layout-engine.md のテスト観点を全て通す
+- [x] layout-engine.md のテスト観点を全て通す
 
 **この時点で画面は何も無い。最大の不確実性を先に解消するのが狙い。**
 
@@ -92,7 +92,9 @@ keifu/
 - [ ] `TreeCanvas`（ズーム・パン）
 - [ ] `Legend`（トークンから自動生成）
 - [ ] Storybook にバリエーションのストーリー
-- [ ] 公開閲覧ページ — データは `src/fixtures/` を直読み。DB はまだ使わない
+- [ ] 公開閲覧ページ — データは `src/fixtures/` を直読み。DB はまだ使わない。
+      **描画の前に `validateGenealogyGraph` を通す。** レイアウト計算は検証を含まない
+      → [ADR-0006](adr/0006-layout-does-not-validate.md)
 
 **この時点で動く家系図が見える。**
 

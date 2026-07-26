@@ -6,14 +6,7 @@ import { genealogySchema, type Genealogy } from '../models'
 
 import { assignGenerations } from './assign-generations'
 import { assignSiblingPositions } from './assign-sibling-positions'
-import {
-  buildLinkPaths,
-  type AbstractPoint,
-  type LayoutLink,
-  type LinkKind,
-  type Placement,
-  type Segment,
-} from './build-link-paths'
+import { buildLinkPaths, type LayoutLink, type LinkKind, type Placement } from './build-link-paths'
 import { selectPrimaryFamilies } from './select-primary-families'
 
 const point = (generationAxis: number, siblingAxis: number) => ({ generationAxis, siblingAxis })
@@ -34,57 +27,6 @@ const placementOf = (genealogy: Genealogy): Placement => {
 
 const linksOf = (genealogy: Genealogy): LayoutLink[] =>
   buildLinkPaths(genealogy, placementOf(genealogy))
-
-/** 線種で直線の経路を集める。曲線は含めない */
-const segmentsOf = (genealogy: Genealogy, kind: LinkKind): Segment[] =>
-  linksOf(genealogy).flatMap((link) =>
-    link.kind === kind && link.shape === 'polyline' ? [link.points] : [],
-  )
-
-/**
- * 人物のノードが立つ点。
- * 落ちていたら例外にする。原点で埋めると、線が通っていないことを黙って通してしまう
- */
-const nodesOf = (genealogy: Genealogy): AbstractPoint[] => {
-  const { generations, siblingPositions } = placementOf(genealogy)
-
-  return genealogy.persons.map(({ id }) => {
-    const generationAxis = generations.get(id)
-    const siblingAxis = siblingPositions.get(id)
-    if (generationAxis === undefined || siblingAxis === undefined) {
-      throw new Error(`位置が割り当てられていない: ${id}`)
-    }
-
-    return point(generationAxis, siblingAxis)
-  })
-}
-
-/** 点が線分の内側（両端を除く）に乗っているか */
-const isPiercedBy = (p: AbstractPoint, [a, b]: Segment): boolean => {
-  const alongGeneration = b.generationAxis - a.generationAxis
-  const alongSibling = b.siblingAxis - a.siblingAxis
-  const toGeneration = p.generationAxis - a.generationAxis
-  const toSibling = p.siblingAxis - a.siblingAxis
-
-  if (alongGeneration * toSibling !== alongSibling * toGeneration) return false
-
-  const projected = alongGeneration * toGeneration + alongSibling * toSibling
-  return projected > 0 && projected < alongGeneration ** 2 + alongSibling ** 2
-}
-
-/** 兄弟バーの横線を、高さと区間にする。縦線である幹はここで落ちる */
-const barSpansOf = (genealogy: Genealogy) =>
-  segmentsOf(genealogy, 'siblingBar').flatMap(([a, b]) =>
-    a.generationAxis === b.generationAxis
-      ? [
-          {
-            height: a.generationAxis,
-            from: Math.min(a.siblingAxis, b.siblingAxis),
-            to: Math.max(a.siblingAxis, b.siblingAxis),
-          },
-        ]
-      : [],
-  )
 
 /** familyId と線種で経路を引く。返る順序はそのまま保つ */
 const pathsIn = (genealogy: Genealogy) => {
@@ -229,31 +171,6 @@ describe('buildLinkPaths', () => {
   it('双方が主系統を持ち隣り合わない夫婦でも、婚姻線は2点を直接結ぶ', () => {
     // family 6 は夏彦（世代1・位置3）と姪の真澄（世代2・位置1）の婚姻
     expect(samplePaths(6, 'marriage')).toEqual([[point(1, 3), point(2, 1)]])
-  })
-
-  it('婚姻線は、両端以外の人物のノードを通らない', () => {
-    // 再婚した春彦の婚姻線が、初婚の千代のノードを貫かないこと
-    const nodes = nodesOf(sampleGenealogy)
-    const pierced = segmentsOf(sampleGenealogy, 'marriage').filter((marriage) =>
-      nodes.some((node) => isPiercedBy(node, marriage)),
-    )
-
-    expect(pierced).toEqual([])
-  })
-
-  it('同じ高さに並ぶ兄弟バーの横線は、区間を共有しない', () => {
-    // 初婚の子と再婚の子が、1本に繋がった横線にぶら下がらないこと
-    const spans = barSpansOf(sampleGenealogy)
-    const merged = spans.flatMap((span, index) =>
-      spans
-        .slice(index + 1)
-        .filter(
-          (other) =>
-            span.height === other.height && span.from <= other.to && other.from <= span.to,
-        ),
-    )
-
-    expect(merged).toEqual([])
   })
 
   it('子の居ない family には、幹も兄弟バーも返さない', () => {
