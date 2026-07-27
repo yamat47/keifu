@@ -93,7 +93,7 @@ keifu/
       一度入れたが、まだ要らないコストだと判断して外した
       → [ADR-0009](adr/0009-browser-default-fonts.md)。
       入れ直すときは [ADR-0008](adr/0008-self-hosted-sliced-web-fonts.md) から読む
-- [ ] `VerticalName`（1文字ずつ `<tspan>` 配置）
+- [x] `VerticalName`（1文字ずつ `<tspan>` 配置）
 - [ ] `PersonNode`
 - [ ] `MarriageLink`（平行2本の path で二重線）
 - [ ] `ChildLink`（実線 / 点線）

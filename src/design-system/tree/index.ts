@@ -1,0 +1,1 @@
+export { VerticalName } from './VerticalName'
