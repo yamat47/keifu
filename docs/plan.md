@@ -94,7 +94,7 @@ keifu/
       → [ADR-0009](adr/0009-browser-default-fonts.md)。
       入れ直すときは [ADR-0008](adr/0008-self-hosted-sliced-web-fonts.md) から読む
 - [x] `VerticalName`（1文字ずつ `<tspan>` 配置）
-- [ ] `PersonNode`
+- [x] `PersonNode`
 - [ ] `MarriageLink`（平行2本の path で二重線）
 - [ ] `ChildLink`（実線 / 点線）
 - [ ] `TreeCanvas`（ズーム・パン）
