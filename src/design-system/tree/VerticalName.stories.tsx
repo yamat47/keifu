@@ -18,10 +18,10 @@ const meta = {
 
 export default meta
 
-// 実際の持ち分で読めるかを見たいので、レイアウトエンジンのピッチに揃える。
-// design-system は domain を import できないので値を写している
-// （SIBLING_PITCH = 80 / GENERATION_PITCH = 200 → src/domain/layout-engine/orientation.ts）。
-// PersonNode がピッチの中で名前に何を割り当てるかを決めたら、その値に合わせ直す
+// 実寸に近いところで読めるかを見たいので、ノードの寸法に近い値を置く。
+// 人名に実際に割り当てられる大きさを持つのは PersonNode で、そちらはノードの高さから
+// 逆算する（design-system.md「人名の大きさはノードの高さから決まる」）。
+// ここは字送りの詰まり方だけを見る場なので、詰まりが目に見える値を選んでよい
 const CELL_WIDTH = 80
 const ROOM_HEIGHT = 140
 const FONT_SIZE = 22
